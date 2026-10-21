@@ -157,7 +157,7 @@
 
       <!-- Quick Actions -->
       <div class="flex items-center gap-2">
-        <!-- Selector de Ejemplos -->
+        <!-- Selector de Ejemplos Rápidos -->
         <div class="hidden md:flex items-center bg-slate-800 p-0.5 rounded-lg border border-slate-700 text-xs">
           <span class="text-slate-400 px-2 font-medium">Ejemplos:</span>
           <button id="btn-example-fiorela" onclick="loadExample('fiorela')" title="Cargar caso de Fiorela (Varios días)" class="px-2.5 py-1 rounded font-medium text-slate-200 hover:text-white hover:bg-slate-700 transition">
@@ -203,41 +203,51 @@
     <!-- COLUMNA IZQUIERDA: FORMULARIO INTERACTIVO -->
     <aside id="form-panel" class="no-print w-full lg:w-[460px] xl:w-[500px] shrink-0 bg-white border-r border-slate-200 flex flex-col h-full overflow-y-auto">
       
-      <div class="p-5 space-y-5">
+      <div class="p-5 space-y-4">
 
-        <!-- Banner de Ayuda Rápida -->
+        <!-- Banner de Guía Rápida -->
         <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-100 flex items-start gap-2.5 text-xs text-blue-900">
           <svg class="w-4 h-4 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
           <p class="leading-relaxed">
-            Los campos predeterminados vienen bloqueados para evitar errores. Marca el check <b>«Editar»</b> al lado de cada campo si necesitas personalizarlo.
+            Completa tus <b>Datos del Solicitante</b> y las <b>Fechas de Vacaciones</b>. El encabezado y destinatario vienen preconfigurados (puedes desplegarlos si requieres editarlos).
           </p>
         </div>
 
-        <!-- SECCIÓN 0: LEMA Y EMISIÓN -->
-        <div class="space-y-3.5">
-          <label class="text-xs font-bold text-slate-800 uppercase tracking-wider pb-1 border-b border-slate-100 block">
-            1. Encabezado & Fecha
-          </label>
-
-          <!-- Lema Oficial: NO editable por defecto, check para editar -->
-          <div class="space-y-1">
-            <div class="flex items-center justify-between">
-              <label for="input-slogan" class="text-xs font-semibold text-slate-700">Lema Oficial del Año</label>
-              <label class="text-[11px] font-medium text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer select-none">
-                <input type="checkbox" id="check-edit-slogan" onchange="toggleField('input-slogan', this.checked)" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
-                <span>Editar</span>
-              </label>
+        <!-- 1. ENCABEZADO OFICIAL (COLAPSADO / SIN DESPLEGAR POR DEFECTO) -->
+        <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-xs">
+          <button type="button" onclick="toggleAccordion('acc-encabezado')" class="w-full px-4 py-3 bg-slate-50 hover:bg-slate-100/80 flex items-center justify-between text-left transition select-none">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+              <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">1. Encabezado Oficial</span>
+              <span class="text-[11px] text-slate-400 font-normal hidden sm:inline">(Lema & Ciudad)</span>
             </div>
-            <input type="text" id="input-slogan" value="«Año de la Esperanza y el Fortalecimiento de la Democracia»" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <!-- Ciudad: NO editable por defecto, check para editar -->
+            <div class="flex items-center gap-1.5 text-slate-400">
+              <span id="label-encabezado-state" class="text-[11px] font-medium">Ver</span>
+              <svg id="chevron-acc-encabezado" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </button>
+          
+          <div id="acc-encabezado" class="hidden p-4 space-y-3.5 border-t border-slate-100 bg-white">
+            <!-- Lema Oficial (Siempre presente, check para editar) -->
             <div class="space-y-1">
               <div class="flex items-center justify-between">
-                <label for="input-city" class="text-xs font-semibold text-slate-700">Ciudad</label>
+                <label for="input-slogan" class="text-xs font-semibold text-slate-700">Lema Oficial del Año</label>
+                <label class="text-[11px] font-medium text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer select-none">
+                  <input type="checkbox" id="check-edit-slogan" onchange="toggleField('input-slogan', this.checked)" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
+                  <span>Editar</span>
+                </label>
+              </div>
+              <input type="text" id="input-slogan" value="«Año de la Esperanza y el Fortalecimiento de la Democracia»" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
+            </div>
+
+            <!-- Ciudad de Emisión (check para editar) -->
+            <div class="space-y-1">
+              <div class="flex items-center justify-between">
+                <label for="input-city" class="text-xs font-semibold text-slate-700">Ciudad de Emisión</label>
                 <label class="text-[11px] font-medium text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer select-none">
                   <input type="checkbox" id="check-edit-city" onchange="toggleField('input-city', this.checked)" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
                   <span>Editar</span>
@@ -245,29 +255,27 @@
               </div>
               <input type="text" id="input-city" value="Arequipa" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
             </div>
-
-            <!-- Fecha de la carta: FECHA DE HOY por defecto, bloqueada, check para editar -->
-            <div class="space-y-1">
-              <div class="flex items-center justify-between">
-                <label for="input-date-emission" class="text-xs font-semibold text-slate-700">Fecha de la Carta</label>
-                <label class="text-[11px] font-medium text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer select-none">
-                  <input type="checkbox" id="check-edit-date-emission" onchange="toggleField('input-date-emission', this.checked)" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
-                  <span>Editar</span>
-                </label>
-              </div>
-              <input type="date" id="input-date-emission" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
-            </div>
           </div>
         </div>
 
-        <!-- SECCIÓN 1: DESTINATARIO & ASUNTO -->
-        <div class="space-y-3 pt-1">
-          <label class="text-xs font-bold text-slate-800 uppercase tracking-wider pb-1 border-b border-slate-100 block">
-            2. Destinatario & Asunto
-          </label>
-          <div class="space-y-3">
-            
-            <!-- Destinatario: bloqueado con check para editar -->
+        <!-- 2. DESTINATARIO & ASUNTO (COLAPSADO / SIN DESPLEGAR POR DEFECTO) -->
+        <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-xs">
+          <button type="button" onclick="toggleAccordion('acc-destinatario')" class="w-full px-4 py-3 bg-slate-50 hover:bg-slate-100/80 flex items-center justify-between text-left transition select-none">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+              <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">2. Destinatario & Asunto</span>
+              <span class="text-[11px] text-slate-400 font-normal hidden sm:inline">(Italo Carrera Yepez)</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-slate-400">
+              <span id="label-destinatario-state" class="text-[11px] font-medium">Ver</span>
+              <svg id="chevron-acc-destinatario" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </button>
+          
+          <div id="acc-destinatario" class="hidden p-4 space-y-3 border-t border-slate-100 bg-white">
+            <!-- Destinatario -->
             <div class="space-y-1">
               <div class="flex items-center justify-between">
                 <label for="input-dest-name" class="text-xs font-semibold text-slate-700">Nombre del Destinatario</label>
@@ -279,7 +287,7 @@
               <input type="text" id="input-dest-name" value="Italo Carrera Yepez" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
             </div>
 
-            <!-- Cargo: bloqueado con check para editar -->
+            <!-- Cargo -->
             <div class="space-y-1">
               <div class="flex items-center justify-between">
                 <label for="input-dest-charge" class="text-xs font-semibold text-slate-700">Cargo del Destinatario</label>
@@ -291,7 +299,7 @@
               <input type="text" id="input-dest-charge" value="Gerente del Área Administrativa" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
             </div>
 
-            <!-- Asunto: bloqueado con check para editar -->
+            <!-- Asunto -->
             <div class="space-y-1">
               <div class="flex items-center justify-between">
                 <label for="input-subject" class="text-xs font-semibold text-slate-700">Asunto</label>
@@ -302,16 +310,18 @@
               </div>
               <input type="text" id="input-subject" value="SOLICITUD DE VACACIONES" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 uppercase font-semibold border rounded-lg transition input-locked">
             </div>
-
           </div>
         </div>
 
-        <!-- SECCIÓN 2: DATOS DEL SOLICITANTE -->
-        <div class="space-y-3 pt-1">
-          <div class="flex items-center justify-between pb-1 border-b border-slate-100">
-            <label class="text-xs font-bold text-slate-800 uppercase tracking-wider">3. Datos del Solicitante</label>
+        <!-- 3. DATOS DEL SOLICITANTE (DESPLEGADO POR DEFECTO + FECHA DE LA CARTA) -->
+        <div class="border border-blue-200/80 rounded-xl overflow-hidden bg-white shadow-xs ring-1 ring-blue-50">
+          <div class="px-4 py-3 bg-blue-50/50 flex items-center justify-between border-b border-blue-100">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+              <span class="text-xs font-bold text-blue-900 uppercase tracking-wider">3. Datos del Solicitante</span>
+            </div>
             
-            <!-- Género: Masculino - Femenino (Femenino por defecto) -->
+            <!-- Selector de Género: Femenino por defecto -->
             <div class="flex items-center gap-1 text-xs">
               <button type="button" id="gender-f" onclick="setGender('f')" class="px-2.5 py-1 rounded font-semibold text-blue-700 bg-blue-100 border border-blue-200 transition">
                 Femenino
@@ -322,12 +332,14 @@
             </div>
           </div>
 
-          <div class="space-y-2.5">
+          <div class="p-4 space-y-3">
+            <!-- Nombres y Apellidos -->
             <div>
               <label for="input-user-name" class="block text-xs font-semibold text-slate-700 mb-1">Nombres y Apellidos</label>
               <input type="text" id="input-user-name" value="GUEVARA VERA FIORELA ESTEFANIA" oninput="this.value = this.value.toUpperCase(); updatePreview();" class="w-full text-xs px-3 py-2 uppercase font-medium border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
             </div>
 
+            <!-- DNI y Domicilio -->
             <div class="grid grid-cols-3 gap-2.5">
               <div class="col-span-1">
                 <label for="input-user-dni" class="block text-xs font-semibold text-slate-700 mb-1">DNI (8 dígitos)</label>
@@ -339,55 +351,75 @@
               </div>
             </div>
 
-            <p class="text-[11px] text-slate-500 italic pt-0.5">
-              Posición: Fijo a la derecha (formato Word oficial con sangría al 56%).
+            <!-- FECHA DE LA CARTA (MOVIDA AQUÍ: POR DEFECTO FECHA DE HOY, CHECK PARA EDITAR) -->
+            <div class="pt-2 border-t border-slate-100 space-y-1">
+              <div class="flex items-center justify-between">
+                <label for="input-date-emission" class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                  <span>Fecha de la Carta</span>
+                  <span class="text-[10px] text-slate-400 font-normal">(Hoy por defecto)</span>
+                </label>
+                <label class="text-[11px] font-medium text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer select-none">
+                  <input type="checkbox" id="check-edit-date-emission" onchange="toggleField('input-date-emission', this.checked)" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
+                  <span>Editar</span>
+                </label>
+              </div>
+              <input type="date" id="input-date-emission" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
+            </div>
+
+            <p class="text-[11px] text-slate-400 italic pt-0.5">
+              Disposición: Fija a la derecha al 56% (formato Word oficial).
             </p>
           </div>
         </div>
 
-        <!-- SECCIÓN 3: MODALIDAD Y FECHAS -->
-        <div class="space-y-3 pt-1">
-          <label class="text-xs font-bold text-slate-800 uppercase tracking-wider pb-1 border-b border-slate-100 block">
-            4. Fechas de Vacaciones
-          </label>
-
-          <!-- Toggle Un solo día vs Rango -->
-          <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200">
-            <button type="button" id="btn-mode-range" onclick="setMode('range')" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition shadow-sm bg-white text-blue-700 border border-slate-200/80">
-              <span>Rango de fechas</span>
-            </button>
-            <button type="button" id="btn-mode-single" onclick="setMode('single')" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold transition text-slate-600">
-              <span>Un solo día</span>
-            </button>
-          </div>
-
-          <!-- RANGO DE FECHAS (PREDETERMINADO) -->
-          <div id="panel-range-date" class="space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
-            <div class="grid grid-cols-2 gap-2.5">
-              <div>
-                <label for="input-range-start" class="block text-xs font-semibold text-slate-700 mb-1">Fecha de Inicio</label>
-                <input type="date" id="input-range-start" oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              </div>
-              <div>
-                <label for="input-range-end" class="block text-xs font-semibold text-slate-700 mb-1">Fecha de Fin</label>
-                <input type="date" id="input-range-end" oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              </div>
-            </div>
-            <div class="flex items-center justify-between text-[11px]">
-              <span id="range-days-counter" class="font-semibold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">0 días</span>
-              <span class="text-slate-500 italic">«...del DD/MM/AAAA al DD/MM/AAAA...»</span>
+        <!-- 4. FECHAS DE VACACIONES (DESPLEGADO POR DEFECTO) -->
+        <div class="border border-blue-200/80 rounded-xl overflow-hidden bg-white shadow-xs ring-1 ring-blue-50">
+          <div class="px-4 py-3 bg-blue-50/50 flex items-center justify-between border-b border-blue-100">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+              <span class="text-xs font-bold text-blue-900 uppercase tracking-wider">4. Fechas de Vacaciones</span>
             </div>
           </div>
 
-          <!-- UN SOLO DÍA -->
-          <div id="panel-single-date" class="hidden space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
-            <div>
-              <label for="input-single-date" class="block text-xs font-semibold text-slate-700 mb-1">Día Solicitado</label>
-              <input type="date" id="input-single-date" oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <div class="p-4 space-y-3">
+            <!-- Selector Rango vs Un solo día -->
+            <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200">
+              <button type="button" id="btn-mode-range" onclick="setMode('range')" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition shadow-sm bg-white text-blue-700 border border-slate-200/80">
+                <span>Rango de fechas</span>
+              </button>
+              <button type="button" id="btn-mode-single" onclick="setMode('single')" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold transition text-slate-600">
+                <span>Un solo día</span>
+              </button>
             </div>
-            <p class="text-[11px] text-slate-500">
-              Redacción: <span class="italic font-serif">«...en el mes de <b id="hint-month-single">noviembre</b> el <b id="hint-date-single">12/11/2026</b>...»</span>
-            </p>
+
+            <!-- RANGO DE FECHAS -->
+            <div id="panel-range-date" class="space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label for="input-range-start" class="block text-xs font-semibold text-slate-700 mb-1">Fecha de Inicio</label>
+                  <input type="date" id="input-range-start" oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                  <label for="input-range-end" class="block text-xs font-semibold text-slate-700 mb-1">Fecha de Fin</label>
+                  <input type="date" id="input-range-end" oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+              </div>
+              <div class="flex items-center justify-between text-[11px]">
+                <span id="range-days-counter" class="font-semibold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">0 días</span>
+                <span class="text-slate-500 italic">«...del DD/MM/AAAA al DD/MM/AAAA...»</span>
+              </div>
+            </div>
+
+            <!-- UN SOLO DÍA -->
+            <div id="panel-single-date" class="hidden space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <div>
+                <label for="input-single-date" class="block text-xs font-semibold text-slate-700 mb-1">Día Solicitado</label>
+                <input type="date" id="input-single-date" oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <p class="text-[11px] text-slate-500">
+                Redacción: <span class="italic font-serif">«...en el mes de <b id="hint-month-single">noviembre</b> el <b id="hint-date-single">12/11/2026</b>...»</span>
+              </p>
+            </div>
           </div>
         </div>
 
@@ -538,7 +570,6 @@
     ];
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Establecer valores iniciales
       document.getElementById('input-date-emission').value = state.dateEmission;
       document.getElementById('input-single-date').value = state.singleDate;
       document.getElementById('input-range-start').value = state.rangeStart;
@@ -549,7 +580,25 @@
       updatePreview();
     });
 
-    // Función para activar o desactivar edición de campos bloqueados
+    // Control de acordeones para colapsar / desplegar
+    function toggleAccordion(id) {
+      const content = document.getElementById(id);
+      const chevron = document.getElementById('chevron-' + id);
+      const stateLabel = document.getElementById(id === 'acc-encabezado' ? 'label-encabezado-state' : 'label-destinatario-state');
+      
+      const isHidden = content.classList.contains('hidden');
+      if (isHidden) {
+        content.classList.remove('hidden');
+        chevron.style.transform = 'rotate(180deg)';
+        if (stateLabel) stateLabel.textContent = 'Ocultar';
+      } else {
+        content.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+        if (stateLabel) stateLabel.textContent = 'Ver';
+      }
+    }
+
+    // Activar o desactivar edición de campos bloqueados
     function toggleField(inputId, isEditable) {
       const input = document.getElementById(inputId);
       if (isEditable) {
@@ -614,7 +663,6 @@
       }
     }
 
-    // Género: Femenino por defecto
     function setGender(gender) {
       state.gender = gender;
       updateGenderUI();
@@ -658,11 +706,11 @@
     }
 
     function updatePreview() {
-      // 1. Lema Oficial (SIEMPRE VISIBLE)
+      // 1. Lema Oficial (Siempre presente)
       const sloganText = document.getElementById('input-slogan').value.trim();
       document.getElementById('doc-slogan').textContent = sloganText || '«Año de la Esperanza y el Fortalecimiento de la Democracia»';
 
-      // 2. Ciudad y Fecha de Emisión
+      // 2. Ciudad y Fecha de Emisión (Fecha desde datos del solicitante)
       const city = document.getElementById('input-city').value.trim() || 'Arequipa';
       const dateEmissionVal = document.getElementById('input-date-emission').value;
       document.getElementById('doc-date-emission').textContent = formatEmissionDateSpanish(parseDate(dateEmissionVal), city);
