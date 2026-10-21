@@ -175,11 +175,11 @@
         <!-- Selector de Ejemplos Rápidos -->
         <div class="hidden md:flex items-center bg-slate-800 p-0.5 rounded-lg border border-slate-700 text-xs">
           <span class="text-slate-400 px-2 font-medium">Ejemplos:</span>
-          <button id="btn-example-fiorela" onclick="loadExample('fiorela')" title="Cargar caso de Fiorela (Varios días)" class="px-2.5 py-1 rounded font-medium text-slate-200 hover:text-white hover:bg-slate-700 transition">
-            Fiorela (Rango)
+          <button id="btn-example-fiorela" onclick="loadExample('range')" title="Cargar ejemplo de rango de días" class="px-2.5 py-1 rounded font-medium text-slate-200 hover:text-white hover:bg-slate-700 transition">
+            Rango de días
           </button>
-          <button id="btn-example-roger" onclick="loadExample('roger')" title="Cargar caso de Roger (1 solo día)" class="px-2.5 py-1 rounded font-medium text-slate-200 hover:text-white hover:bg-slate-700 transition">
-            Roger (1 Día)
+          <button id="btn-example-single" onclick="loadExample('single')" title="Cargar ejemplo de 1 solo día" class="px-2.5 py-1 rounded font-medium text-slate-200 hover:text-white hover:bg-slate-700 transition">
+            1 solo día
           </button>
         </div>
 
@@ -366,14 +366,14 @@
 
               <div>
                 <label for="input-user-dni" id="label-doc-number" class="block text-xs font-semibold text-slate-700 mb-1">Número de Documento</label>
-                <input type="text" id="input-user-dni" maxlength="20" value="73809464" oninput="this.value = this.value.toUpperCase(); updatePreview();" class="w-full text-xs px-3 py-2 font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="N° de documento">
+                <input type="text" id="input-user-dni" maxlength="20" value="77777777" oninput="this.value = this.value.toUpperCase(); updatePreview();" class="w-full text-xs px-3 py-2 font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="N° de documento">
               </div>
             </div>
 
             <!-- Domicilio Actual -->
             <div>
               <label for="input-user-address" class="block text-xs font-semibold text-slate-700 mb-1">Domicilio Actual</label>
-              <input type="text" id="input-user-address" value="Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa." oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+              <input type="text" id="input-user-address" value="Av. Las Palmeras 450, Yanahuara, Arequipa." oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
             </div>
 
             <!-- FECHA DE LA CARTA (FECHA DE HOY, CHECK PARA EDITAR) -->
@@ -506,7 +506,7 @@
           <div id="applicant-wrapper" class="flex justify-end pt-5">
             <div id="applicant-box" class="w-[56%] text-justify text-[11pt] leading-[1.3]">
               <p>
-                Yo, <strong id="doc-user-name" class="font-bold px-1 py-0.5">GUEVARA VERA FIORELA ESTEFANIA</strong>, <span id="doc-gender-id" class="px-1 py-0.5">identificada</span> con <span id="doc-doc-type" class="px-1 py-0.5">DNI</span> <strong id="doc-user-dni" class="font-bold px-1 py-0.5">73809464</strong>, <span id="doc-gender-dom" class="px-1 py-0.5">domiciliada</span> en <span id="doc-user-address" class="px-1 py-0.5">Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa.</span>
+                Yo, <strong id="doc-user-name" class="font-bold px-1 py-0.5">GUEVARA VERA FIORELA ESTEFANIA</strong>, <span id="doc-gender-id" class="px-1 py-0.5">identificada</span> con <span id="doc-doc-type" class="px-1 py-0.5">DNI</span> <strong id="doc-user-dni" class="font-bold px-1 py-0.5">77777777</strong>, <span id="doc-gender-dom" class="px-1 py-0.5">domiciliada</span> en <span id="doc-user-address" class="px-1 py-0.5">Av. Las Palmeras 450, Yanahuara, Arequipa.</span>
               </p>
             </div>
           </div>
@@ -532,7 +532,7 @@
               GUEVARA VERA FIORELA ESTEFANIA
             </p>
             <p id="doc-sign-dni" class="text-[11pt] text-black mt-0.5 px-1 py-0.5">
-              DNI: 73809464
+              DNI: 77777777
             </p>
           </div>
         </div>
@@ -583,8 +583,8 @@
       subject: 'SOLICITUD DE VACACIONES',
       
       userName: 'GUEVARA VERA FIORELA ESTEFANIA',
-      userDni: '73809464',
-      userAddress: 'Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa.',
+      userDni: '77777777',
+      userAddress: 'Av. Las Palmeras 450, Yanahuara, Arequipa.',
       
       singleDate: '2026-11-12',
       rangeStart: '2026-06-23',
@@ -662,7 +662,7 @@
       state.docType = type;
       const inputDoc = document.getElementById('input-user-dni');
       if (type === 'DNI') {
-        inputDoc.setAttribute('placeholder', 'Ej. 73809464');
+        inputDoc.setAttribute('placeholder', 'Ej. 77777777');
       } else {
         inputDoc.setAttribute('placeholder', 'Ej. 001234567');
       }
@@ -822,8 +822,8 @@
 
       // 4. Datos del Solicitante y Documento
       const userName = document.getElementById('input-user-name').value.trim() || 'GUEVARA VERA FIORELA ESTEFANIA';
-      const userDocNumber = document.getElementById('input-user-dni').value.trim() || '73809464';
-      const userAddress = document.getElementById('input-user-address').value.trim() || 'Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa.';
+      const userDocNumber = document.getElementById('input-user-dni').value.trim() || '77777777';
+      const userAddress = document.getElementById('input-user-address').value.trim() || 'Av. Las Palmeras 450, Yanahuara, Arequipa.';
 
       document.getElementById('doc-user-name').textContent = userName;
       document.getElementById('doc-user-dni').textContent = userDocNumber;
@@ -884,34 +884,26 @@
       document.getElementById('doc-sign-dni').textContent = `${signLabel}: ${userDocNumber}`;
     }
 
-    // Cargar Ejemplos
+    // Cargar Ejemplos (1 solo día vs Rango de fechas)
     function loadExample(type) {
       clearAllHighlights();
-      if (type === 'roger') {
+      setGender('f');
+      state.docType = 'DNI';
+      document.getElementById('select-doc-type').value = 'DNI';
+
+      document.getElementById('input-user-name').value = 'GUEVARA VERA FIORELA ESTEFANIA';
+      document.getElementById('input-user-dni').value = '77777777';
+      document.getElementById('input-user-address').value = 'Av. Las Palmeras 450, Yanahuara, Arequipa.';
+
+      if (type === 'single') {
         setMode('single');
-        setGender('m');
-        state.docType = 'DNI';
-        document.getElementById('select-doc-type').value = 'DNI';
-
-        document.getElementById('input-user-name').value = 'SANALEA CALCINA ROGER JAIR';
-        document.getElementById('input-user-dni').value = '72040673';
-        document.getElementById('input-user-address').value = 'Pasaje Miguel Grau 205 Leones del Misti.';
         document.getElementById('input-single-date').value = '2026-11-12';
-
-        showToast('Cargado: Roger Jair (1 solo día)');
+        showToast('Cargado: 1 solo día');
       } else {
         setMode('range');
-        setGender('f'); // Femenino por defecto
-        state.docType = 'DNI';
-        document.getElementById('select-doc-type').value = 'DNI';
-
-        document.getElementById('input-user-name').value = 'GUEVARA VERA FIORELA ESTEFANIA';
-        document.getElementById('input-user-dni').value = '73809464';
-        document.getElementById('input-user-address').value = 'Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa.';
         document.getElementById('input-range-start').value = '2026-06-23';
         document.getElementById('input-range-end').value = '2026-06-30';
-
-        showToast('Cargado: Fiorela (Rango de fechas)');
+        showToast('Cargado: Rango de fechas');
       }
 
       updatePreview();
