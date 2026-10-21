@@ -36,7 +36,15 @@
       font-family: Calibri, Carlito, Aptos, 'Segoe UI', Arial, sans-serif;
     }
 
-    /* Reglas estrictas de impresión: Cero encabezados del navegador, tamaño exacto A4 */
+    /* Resaltador visual interactivo al editar en pantalla */
+    .highlight-active {
+      background-color: rgba(254, 240, 138, 0.75) !important; /* Amarillo suave tipo resaltador */
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.45) !important;
+      border-radius: 2px !important;
+      transition: background-color 0.15s ease, box-shadow 0.15s ease !important;
+    }
+
+    /* Reglas estrictas de impresión: Cero encabezados del navegador, tamaño exacto A4, CERO RESALTADOS */
     @page {
       size: A4 portrait;
       margin: 0 !important; /* Suprime fecha, título y URL de Chrome/Edge automáticamente */
@@ -56,6 +64,13 @@
 
       .no-print {
         display: none !important;
+      }
+
+      /* Anula cualquier resaltado visual al imprimir o exportar a PDF */
+      .highlight-active {
+        background-color: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
       }
 
       #preview-pane {
@@ -205,13 +220,13 @@
       
       <div class="p-5 space-y-4">
 
-        <!-- Banner de Guía Rápida -->
+        <!-- Banner de Guía con indicador de resaltado -->
         <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-100 flex items-start gap-2.5 text-xs text-blue-900">
           <svg class="w-4 h-4 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
           <p class="leading-relaxed">
-            Completa tus <b>Datos del Solicitante</b> y las <b>Fechas de Vacaciones</b>. El encabezado y destinatario vienen preconfigurados (puedes desplegarlos si requieres editarlos).
+            Al editar cualquier campo, se <b>resalta en tiempo real</b> en la hoja para orientarte. Los resaltados son únicamente visuales y <b>nunca saldrán en la impresión ni en el PDF</b>.
           </p>
         </div>
 
@@ -232,7 +247,7 @@
           </button>
           
           <div id="acc-encabezado" class="hidden p-4 space-y-3.5 border-t border-slate-100 bg-white">
-            <!-- Lema Oficial (Siempre presente, check para editar) -->
+            <!-- Lema Oficial -->
             <div class="space-y-1">
               <div class="flex items-center justify-between">
                 <label for="input-slogan" class="text-xs font-semibold text-slate-700">Lema Oficial del Año</label>
@@ -244,7 +259,7 @@
               <input type="text" id="input-slogan" value="«Año de la Esperanza y el Fortalecimiento de la Democracia»" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
             </div>
 
-            <!-- Ciudad de Emisión (check para editar) -->
+            <!-- Ciudad de Emisión -->
             <div class="space-y-1">
               <div class="flex items-center justify-between">
                 <label for="input-city" class="text-xs font-semibold text-slate-700">Ciudad de Emisión</label>
@@ -313,7 +328,7 @@
           </div>
         </div>
 
-        <!-- 3. DATOS DEL SOLICITANTE (DESPLEGADO POR DEFECTO: DNI O CARNET DE EXTRANJERÍA) -->
+        <!-- 3. DATOS DEL SOLICITANTE -->
         <div class="border border-blue-200/80 rounded-xl overflow-hidden bg-white shadow-xs ring-1 ring-blue-50">
           <div class="px-4 py-3 bg-blue-50/50 flex items-center justify-between border-b border-blue-100">
             <div class="flex items-center gap-2">
@@ -339,7 +354,7 @@
               <input type="text" id="input-user-name" value="GUEVARA VERA FIORELA ESTEFANIA" oninput="this.value = this.value.toUpperCase(); updatePreview();" class="w-full text-xs px-3 py-2 uppercase font-medium border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
             </div>
 
-            <!-- TIPO DE DOCUMENTO Y NÚMERO (Soporta DNI o Carnet de Extranjería con > 8 dígitos) -->
+            <!-- TIPO DE DOCUMENTO Y NÚMERO (DNI o Carnet de Extranjería con > 8 dígitos) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div>
                 <label for="select-doc-type" class="block text-xs font-semibold text-slate-700 mb-1">Tipo de Documento</label>
@@ -382,7 +397,7 @@
           </div>
         </div>
 
-        <!-- 4. FECHAS DE VACACIONES (DESPLEGADO POR DEFECTO) -->
+        <!-- 4. FECHAS DE VACACIONES -->
         <div class="border border-blue-200/80 rounded-xl overflow-hidden bg-white shadow-xs ring-1 ring-blue-50">
           <div class="px-4 py-3 bg-blue-50/50 flex items-center justify-between border-b border-blue-100">
             <div class="flex items-center gap-2">
@@ -461,28 +476,29 @@
           
           <!-- LEMA OFICIAL (CENTRADO) - SIEMPRE VISIBLE -->
           <div id="doc-slogan-wrapper" class="text-center pb-1">
-            <p id="doc-slogan" class="text-[10pt] text-slate-800 tracking-normal">
+            <p id="doc-slogan" class="text-[10pt] text-slate-800 tracking-normal px-1 py-0.5">
               «Año de la Esperanza y el Fortalecimiento de la Democracia»
             </p>
           </div>
 
           <!-- LUGAR Y FECHA (DERECHA) -->
           <div class="text-right pt-2">
-            <p id="doc-date-emission" class="text-[11pt] text-black">
+            <p id="doc-date-emission" class="text-[11pt] text-black px-1 py-0.5 inline-block">
               Arequipa, 21 de octubre del 2026
             </p>
           </div>
 
           <!-- DESTINATARIO (IZQUIERDA) -->
           <div class="space-y-0.5 pt-3 leading-tight text-[11pt]">
-            <p id="doc-dest-name" class="font-bold text-black">Italo Carrera Yepez</p>
-            <p id="doc-dest-charge" class="text-black">Gerente del Área Administrativa</p>
+            <p id="doc-dest-name" class="font-bold text-black px-1 py-0.5 inline-block">Italo Carrera Yepez</p>
+            <br>
+            <p id="doc-dest-charge" class="text-black px-1 py-0.5 inline-block">Gerente del Área Administrativa</p>
           </div>
 
           <!-- ASUNTO (IZQUIERDA EN NEGRITA) -->
           <div class="pt-3 pb-1">
             <p class="text-[11pt] font-bold text-black">
-              ASUNTO: <span id="doc-subject">SOLICITUD DE VACACIONES</span>
+              ASUNTO: <span id="doc-subject" class="px-1 py-0.5 inline-block">SOLICITUD DE VACACIONES</span>
             </p>
           </div>
 
@@ -490,7 +506,7 @@
           <div id="applicant-wrapper" class="flex justify-end pt-5">
             <div id="applicant-box" class="w-[56%] text-justify text-[11pt] leading-[1.3]">
               <p>
-                Yo, <strong id="doc-user-name" class="font-bold">GUEVARA VERA FIORELA ESTEFANIA</strong>, <span id="doc-gender-id">identificada</span> con <span id="doc-doc-type">DNI</span> <strong id="doc-user-dni" class="font-bold">73809464</strong>, <span id="doc-gender-dom">domiciliada</span> en <span id="doc-user-address">Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa.</span>
+                Yo, <strong id="doc-user-name" class="font-bold px-1 py-0.5">GUEVARA VERA FIORELA ESTEFANIA</strong>, <span id="doc-gender-id" class="px-1 py-0.5">identificada</span> con <span id="doc-doc-type" class="px-1 py-0.5">DNI</span> <strong id="doc-user-dni" class="font-bold px-1 py-0.5">73809464</strong>, <span id="doc-gender-dom" class="px-1 py-0.5">domiciliada</span> en <span id="doc-user-address" class="px-1 py-0.5">Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa.</span>
               </p>
             </div>
           </div>
@@ -498,7 +514,7 @@
           <!-- PÁRRAFO DE PETICIÓN (JUSTIFICADO POR PREDETERMINADO) -->
           <div id="doc-body-container" class="pt-8 space-y-4 text-justify text-[11pt] leading-[1.35]">
             <p id="doc-paragraph-request">
-              Solicito a cuenta de vacaciones en el mes de <span id="doc-month-phrase">junio</span> <span id="doc-dates-phrase">del 23/06/2026 al 30/06/2026</span>, espero mi solicitud no genere ningún inconveniente y sea aceptada por la empresa. Quedo a la espera de su respuesta.
+              Solicito a cuenta de vacaciones en el mes de <span id="doc-month-phrase" class="px-1 py-0.5">junio</span> <span id="doc-dates-phrase" class="px-1 py-0.5">del 23/06/2026 al 30/06/2026</span>, espero mi solicitud no genere ningún inconveniente y sea aceptada por la empresa. Quedo a la espera de su respuesta.
             </p>
 
             <p id="doc-paragraph-salutation" class="pt-1 text-left">
@@ -512,10 +528,10 @@
         <div class="pt-24 pb-4 flex flex-col items-center justify-center text-center">
           <div class="w-[68mm] flex flex-col items-center">
             <p class="tracking-tighter select-none font-normal text-black">__________________________</p>
-            <p id="doc-sign-name" class="font-bold text-[11pt] uppercase tracking-wide text-black mt-1">
+            <p id="doc-sign-name" class="font-bold text-[11pt] uppercase tracking-wide text-black mt-1 px-1 py-0.5">
               GUEVARA VERA FIORELA ESTEFANIA
             </p>
-            <p id="doc-sign-dni" class="text-[11pt] text-black mt-0.5">
+            <p id="doc-sign-dni" class="text-[11pt] text-black mt-0.5 px-1 py-0.5">
               DNI: 73809464
             </p>
           </div>
@@ -580,6 +596,23 @@
       'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
     ];
 
+    // MAPEO DE RESALTADOS VISUALES ENTRE INPUTS Y ELEMENTOS DEL DOCUMENTO
+    const HIGHLIGHT_MAP = {
+      'input-slogan': ['doc-slogan'],
+      'input-city': ['doc-date-emission'],
+      'input-date-emission': ['doc-date-emission'],
+      'input-dest-name': ['doc-dest-name'],
+      'input-dest-charge': ['doc-dest-charge'],
+      'input-subject': ['doc-subject'],
+      'input-user-name': ['doc-user-name', 'doc-sign-name'],
+      'select-doc-type': ['doc-doc-type', 'doc-sign-dni'],
+      'input-user-dni': ['doc-user-dni', 'doc-sign-dni'],
+      'input-user-address': ['doc-user-address'],
+      'input-single-date': ['doc-month-phrase', 'doc-dates-phrase'],
+      'input-range-start': ['doc-month-phrase', 'doc-dates-phrase'],
+      'input-range-end': ['doc-month-phrase', 'doc-dates-phrase']
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('input-date-emission').value = state.dateEmission;
       document.getElementById('input-single-date').value = state.singleDate;
@@ -587,10 +620,42 @@
       document.getElementById('input-range-end').value = state.rangeEnd;
       document.getElementById('select-doc-type').value = state.docType;
       
+      setupHighlightListeners();
       updateModeUI();
       updateGenderUI();
       updatePreview();
     });
+
+    // CONFIGURAR LISTENERS PARA RESALTAR VISUALMENTE MIENTRAS SE EDITA
+    function setupHighlightListeners() {
+      Object.keys(HIGHLIGHT_MAP).forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        input.addEventListener('focus', () => highlightDocElements(inputId));
+        input.addEventListener('input', () => highlightDocElements(inputId));
+        input.addEventListener('blur', () => clearAllHighlights());
+      });
+    }
+
+    function highlightDocElements(inputId) {
+      clearAllHighlights();
+      const targetIds = HIGHLIGHT_MAP[inputId];
+      if (!targetIds) return;
+
+      targetIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('highlight-active');
+        }
+      });
+    }
+
+    function clearAllHighlights() {
+      document.querySelectorAll('.highlight-active').forEach(el => {
+        el.classList.remove('highlight-active');
+      });
+    }
 
     // Cambiar tipo de documento (DNI vs Carnet de Extranjería)
     function setDocType(type) {
@@ -601,6 +666,7 @@
       } else {
         inputDoc.setAttribute('placeholder', 'Ej. 001234567');
       }
+      highlightDocElements('select-doc-type');
       updatePreview();
     }
 
@@ -630,10 +696,12 @@
         input.classList.remove('input-locked');
         input.classList.add('input-editable');
         input.focus();
+        highlightDocElements(inputId);
       } else {
         input.setAttribute('readonly', 'true');
         input.classList.remove('input-editable');
         input.classList.add('input-locked');
+        clearAllHighlights();
       }
     }
 
@@ -666,6 +734,7 @@
       state.mode = mode;
       updateModeUI();
       updatePreview();
+      highlightDocElements(mode === 'single' ? 'input-single-date' : 'input-range-start');
     }
 
     function updateModeUI() {
@@ -691,6 +760,13 @@
       state.gender = gender;
       updateGenderUI();
       updatePreview();
+
+      // Resaltado temporal suave al cambiar género
+      const g1 = document.getElementById('doc-gender-id');
+      const g2 = document.getElementById('doc-gender-dom');
+      if (g1) g1.classList.add('highlight-active');
+      if (g2) g2.classList.add('highlight-active');
+      setTimeout(() => clearAllHighlights(), 1400);
     }
 
     function updateGenderUI() {
@@ -744,7 +820,7 @@
       document.getElementById('doc-dest-charge').textContent = document.getElementById('input-dest-charge').value.trim() || 'Gerente del Área Administrativa';
       document.getElementById('doc-subject').textContent = document.getElementById('input-subject').value.trim() || 'SOLICITUD DE VACACIONES';
 
-      // 4. Datos del Solicitante y Documento de Identidad
+      // 4. Datos del Solicitante y Documento
       const userName = document.getElementById('input-user-name').value.trim() || 'GUEVARA VERA FIORELA ESTEFANIA';
       const userDocNumber = document.getElementById('input-user-dni').value.trim() || '73809464';
       const userAddress = document.getElementById('input-user-address').value.trim() || 'Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa.';
@@ -753,11 +829,9 @@
       document.getElementById('doc-user-dni').textContent = userDocNumber;
       document.getElementById('doc-user-address').textContent = userAddress;
 
-      // Actualizar tipo de documento en el cuerpo (DNI o Carnet de Extranjería)
       const docTypeLabel = state.docType === 'DNI' ? 'DNI' : 'Carnet de Extranjería';
       document.getElementById('doc-doc-type').textContent = docTypeLabel;
 
-      // Concordancia de género (Femenino por defecto)
       document.getElementById('doc-gender-id').textContent = state.gender === 'f' ? 'identificada' : 'identificado';
       document.getElementById('doc-gender-dom').textContent = state.gender === 'f' ? 'domiciliada' : 'domiciliado';
 
@@ -804,7 +878,7 @@
         }
       }
 
-      // 6. Firma (Etiqueta adaptada: DNI o C.E.)
+      // 6. Firma
       const signLabel = state.docType === 'DNI' ? 'DNI' : 'C.E.';
       document.getElementById('doc-sign-name').textContent = userName;
       document.getElementById('doc-sign-dni').textContent = `${signLabel}: ${userDocNumber}`;
@@ -812,6 +886,7 @@
 
     // Cargar Ejemplos
     function loadExample(type) {
+      clearAllHighlights();
       if (type === 'roger') {
         setMode('single');
         setGender('m');
@@ -894,8 +969,9 @@
       });
     }
 
-    // Imprimir
+    // Imprimir (Limpia cualquier resaltado activo antes de imprimir)
     function printDocument() {
+      clearAllHighlights();
       const prevZoom = state.zoom;
       resetZoom();
       window.print();
