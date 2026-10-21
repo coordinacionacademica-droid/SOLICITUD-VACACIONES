@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Solicitud de Vacaciones Corporativas</title>
+  <meta name="description" content="Generador formal de solicitudes de vacaciones con formato idéntico a Microsoft Word / PDF oficial para empresas peruanas.">
+  
+  <!-- Tipografía idéntica a Microsoft Word (Calibri / Carlito / Aptos / Arial) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            word: ['Calibri', 'Carlito', 'Aptos', 'Segoe UI', 'Arial', 'sans-serif'],
+            ui: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            'word-sheet': '0 10px 30px -5px rgba(0, 0, 0, 0.18), 0 4px 10px -2px rgba(0, 0, 0, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Tipografía idéntica a MS Word */
+    .font-doc-word {
+      font-family: Calibri, Carlito, Aptos, 'Segoe UI', Arial, sans-serif;
+    }
+
+    /* Reglas estrictas de impresión: Cero encabezados del navegador, tamaño exacto A4 */
+    @page {
+      size: A4 portrait;
+      margin: 0 !important; /* Suprime fecha, título y URL de Chrome/Edge automáticamente */
+    }
+
+    @media print {
+      html, body {
+        width: 210mm !important;
+        height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      #preview-pane {
+        width: 210mm !important;
+        height: 297mm !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+        display: block !important;
+        overflow: hidden !important;
+      }
+
+      #document-sheet {
+        width: 210mm !important;
+        height: 297mm !important;
+        min-height: 297mm !important;
+        max-height: 297mm !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        transform: none !important;
+        box-sizing: border-box !important;
+        /* Márgenes exactos de página Word: Superior 24mm, Laterales 30mm, Inferior 24mm */
+        padding: 24mm 30mm 24mm 30mm !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+      }
+    }
+
+    /* Hoja A4 en pantalla */
+    .a4-sheet {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      box-sizing: border-box;
+      transition: transform 0.15s ease-out;
+    }
+
+    @media (max-width: 1024px) {
+      .a4-sheet {
+        width: 100%;
+        min-height: auto;
+      }
+    }
+
+    /* Estilo de inputs bloqueados vs editables */
+    .input-locked {
+      background-color: #f8fafc;
+      border-color: #e2e8f0;
+      color: #334155;
+      cursor: default;
+    }
+    .input-locked:focus {
+      outline: none;
+      border-color: #cbd5e1;
+      box-shadow: none;
+    }
+    .input-editable {
+      background-color: #ffffff;
+      border-color: #3b82f6;
+      color: #0f172a;
+    }
+
+    /* Scrollbars discretos */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-ui text-slate-800 antialiased bg-slate-100">
+
+  <!-- HEADER SUPERIOR -->
+  <header class="no-print bg-slate-900 text-white border-b border-slate-800 shrink-0 sticky top-0 z-30 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Título -->
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-sm font-bold text-sm">
+          W
+        </div>
+        <div>
+          <h1 class="font-bold text-sm sm:text-base tracking-tight leading-tight flex items-center gap-2">
+            DocuVacas <span class="text-[11px] bg-blue-500/20 text-blue-300 font-semibold px-2 py-0.5 rounded border border-blue-400/30">Formato Word Oficial</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="flex items-center gap-2">
+        <!-- Selector de Ejemplos -->
+        <div class="hidden md:flex items-center bg-slate-800 p-0.5 rounded-lg border border-slate-700 text-xs">
+          <span class="text-slate-400 px-2 font-medium">Ejemplos:</span>
+          <button id="btn-example-fiorela" onclick="loadExample('fiorela')" title="Cargar caso de Fiorela (Varios días)" class="px-2.5 py-1 rounded font-medium text-slate-200 hover:text-white hover:bg-slate-700 transition">
+            Fiorela (Rango)
+          </button>
+          <button id="btn-example-roger" onclick="loadExample('roger')" title="Cargar caso de Roger (1 solo día)" class="px-2.5 py-1 rounded font-medium text-slate-200 hover:text-white hover:bg-slate-700 transition">
+            Roger (1 Día)
+          </button>
+        </div>
+
+        <!-- Botón Copiar -->
+        <button onclick="copyToClipboard()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition active:scale-95">
+          <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+          </svg>
+          <span class="hidden sm:inline">Copiar texto</span>
+        </button>
+
+        <!-- Botón Imprimir / PDF -->
+        <button onclick="printDocument()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg shadow-sm hover:shadow transition active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+          <span>Imprimir / Guardar PDF</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- PESTAÑAS MÓVILES -->
+  <div class="no-print lg:hidden bg-white border-b border-slate-200 px-4 py-2 flex items-center justify-center gap-2">
+    <button id="tab-btn-form" onclick="switchMobileTab('form')" class="flex-1 py-1.5 text-xs font-semibold rounded-md bg-blue-50 text-blue-700 border border-blue-200">
+      Formulario
+    </button>
+    <button id="tab-btn-preview" onclick="switchMobileTab('preview')" class="flex-1 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:bg-slate-100">
+      Vista Previa (Word)
+    </button>
+  </div>
+
+  <!-- CONTENEDOR PRINCIPAL: SPLIT-SCREEN -->
+  <main class="flex-1 flex overflow-hidden">
+    
+    <!-- COLUMNA IZQUIERDA: FORMULARIO INTERACTIVO -->
+    <aside id="form-panel" class="no-print w-full lg:w-[460px] xl:w-[500px] shrink-0 bg-white border-r border-slate-200 flex flex-col h-full overflow-y-auto">
+      
+      <div class="p-5 space-y-5">
+
+        <!-- Banner de Ayuda Rápida -->
+        <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-100 flex items-start gap-2.5 text-xs text-blue-900">
+          <svg class="w-4 h-4 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <p class="leading-relaxed">
+            Los campos predeterminados vienen bloqueados para evitar errores. Marca el check <b>«Editar»</b> al lado de cada campo si necesitas personalizarlo.
+          </p>
+        </div>
+
+        <!-- SECCIÓN 0: LEMA Y EMISIÓN -->
+        <div class="space-y-3.5">
+          <label class="text-xs font-bold text-slate-800 uppercase tracking-wider pb-1 border-b border-slate-100 block">
+            1. Encabezado & Fecha
+          </label>
+
+          <!-- Lema Oficial: NO editable por defecto, check para editar -->
+          <div class="space-y-1">
+            <div class="flex items-center justify-between">
+              <label for="input-slogan" class="text-xs font-semibold text-slate-700">Lema Oficial del Año</label>
+              <label class="text-[11px] font-medium text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer select-none">
+                <input type="checkbox" id="check-edit-slogan" onchange="toggleField('input-slogan', this.checked)" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
+                <span>Editar</span>
+              </label>
+            </div>
+            <input type="text" id="input-slogan" value="«Año de la Esperanza y el Fortalecimiento de la Democracia»" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <!-- Ciudad: NO editable por defecto, check para editar -->
+            <div class="space-y-1">
+              <div class="flex items-center justify-between">
+                <label for="input-city" class="text-xs font-semibold text-slate-700">Ciudad</label>
+                <label class="text-[11px] font-medium text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer select-none">
+                  <input type="checkbox" id="check-edit-city" onchange="toggleField('input-city', this.checked)" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
+                  <span>Editar</span>
+                </label>
+              </div>
+              <input type="text" id="input-city" value="Arequipa" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
+            </div>
+
+            <!-- Fecha de la carta: FECHA DE HOY por defecto, bloqueada, check para editar -->
+            <div class="space-y-1">
+              <div class="flex items-center justify-between">
+                <label for="input-date-emission" class="text-xs font-semibold text-slate-700">Fecha de la Carta</label>
+                <label class="text-[11px] font-medium text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer select-none">
+                  <input type="checkbox" id="check-edit-date-emission" onchange="toggleField('input-date-emission', this.checked)" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
+                  <span>Editar</span>
+                </label>
+              </div>
+              <input type="date" id="input-date-emission" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 1: DESTINATARIO & ASUNTO -->
+        <div class="space-y-3 pt-1">
+          <label class="text-xs font-bold text-slate-800 uppercase tracking-wider pb-1 border-b border-slate-100 block">
+            2. Destinatario & Asunto
+          </label>
+          <div class="space-y-3">
+            
+            <!-- Destinatario: bloqueado con check para editar -->
+            <div class="space-y-1">
+              <div class="flex items-center justify-between">
+                <label for="input-dest-name" class="text-xs font-semibold text-slate-700">Nombre del Destinatario</label>
+                <label class="text-[11px] font-medium text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer select-none">
+                  <input type="checkbox" id="check-edit-dest-name" onchange="toggleField('input-dest-name', this.checked)" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
+                  <span>Editar</span>
+                </label>
+              </div>
+              <input type="text" id="input-dest-name" value="Italo Carrera Yepez" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
+            </div>
+
+            <!-- Cargo: bloqueado con check para editar -->
+            <div class="space-y-1">
+              <div class="flex items-center justify-between">
+                <label for="input-dest-charge" class="text-xs font-semibold text-slate-700">Cargo del Destinatario</label>
+                <label class="text-[11px] font-medium text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer select-none">
+                  <input type="checkbox" id="check-edit-dest-charge" onchange="toggleField('input-dest-charge', this.checked)" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
+                  <span>Editar</span>
+                </label>
+              </div>
+              <input type="text" id="input-dest-charge" value="Gerente del Área Administrativa" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 border rounded-lg transition input-locked">
+            </div>
+
+            <!-- Asunto: bloqueado con check para editar -->
+            <div class="space-y-1">
+              <div class="flex items-center justify-between">
+                <label for="input-subject" class="text-xs font-semibold text-slate-700">Asunto</label>
+                <label class="text-[11px] font-medium text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 cursor-pointer select-none">
+                  <input type="checkbox" id="check-edit-subject" onchange="toggleField('input-subject', this.checked)" class="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5">
+                  <span>Editar</span>
+                </label>
+              </div>
+              <input type="text" id="input-subject" value="SOLICITUD DE VACACIONES" readonly oninput="updatePreview()" class="w-full text-xs px-3 py-2 uppercase font-semibold border rounded-lg transition input-locked">
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECCIÓN 2: DATOS DEL SOLICITANTE -->
+        <div class="space-y-3 pt-1">
+          <div class="flex items-center justify-between pb-1 border-b border-slate-100">
+            <label class="text-xs font-bold text-slate-800 uppercase tracking-wider">3. Datos del Solicitante</label>
+            
+            <!-- Género: Masculino - Femenino (Femenino por defecto) -->
+            <div class="flex items-center gap-1 text-xs">
+              <button type="button" id="gender-f" onclick="setGender('f')" class="px-2.5 py-1 rounded font-semibold text-blue-700 bg-blue-100 border border-blue-200 transition">
+                Femenino
+              </button>
+              <button type="button" id="gender-m" onclick="setGender('m')" class="px-2.5 py-1 rounded font-semibold text-slate-600 bg-slate-100 border border-slate-200 transition">
+                Masculino
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <div>
+              <label for="input-user-name" class="block text-xs font-semibold text-slate-700 mb-1">Nombres y Apellidos</label>
+              <input type="text" id="input-user-name" value="GUEVARA VERA FIORELA ESTEFANIA" oninput="this.value = this.value.toUpperCase(); updatePreview();" class="w-full text-xs px-3 py-2 uppercase font-medium border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+            </div>
+
+            <div class="grid grid-cols-3 gap-2.5">
+              <div class="col-span-1">
+                <label for="input-user-dni" class="block text-xs font-semibold text-slate-700 mb-1">DNI (8 dígitos)</label>
+                <input type="text" id="input-user-dni" maxlength="8" value="73809464" oninput="this.value = this.value.replace(/[^0-9]/g, ''); updatePreview();" class="w-full text-xs px-3 py-2 font-mono border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+              </div>
+              <div class="col-span-2">
+                <label for="input-user-address" class="block text-xs font-semibold text-slate-700 mb-1">Domicilio Actual</label>
+                <input type="text" id="input-user-address" value="Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa." oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+              </div>
+            </div>
+
+            <p class="text-[11px] text-slate-500 italic pt-0.5">
+              Posición: Fijo a la derecha (formato Word oficial con sangría al 56%).
+            </p>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 3: MODALIDAD Y FECHAS -->
+        <div class="space-y-3 pt-1">
+          <label class="text-xs font-bold text-slate-800 uppercase tracking-wider pb-1 border-b border-slate-100 block">
+            4. Fechas de Vacaciones
+          </label>
+
+          <!-- Toggle Un solo día vs Rango -->
+          <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200">
+            <button type="button" id="btn-mode-range" onclick="setMode('range')" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition shadow-sm bg-white text-blue-700 border border-slate-200/80">
+              <span>Rango de fechas</span>
+            </button>
+            <button type="button" id="btn-mode-single" onclick="setMode('single')" class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold transition text-slate-600">
+              <span>Un solo día</span>
+            </button>
+          </div>
+
+          <!-- RANGO DE FECHAS (PREDETERMINADO) -->
+          <div id="panel-range-date" class="space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label for="input-range-start" class="block text-xs font-semibold text-slate-700 mb-1">Fecha de Inicio</label>
+                <input type="date" id="input-range-start" oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div>
+                <label for="input-range-end" class="block text-xs font-semibold text-slate-700 mb-1">Fecha de Fin</label>
+                <input type="date" id="input-range-end" oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+            </div>
+            <div class="flex items-center justify-between text-[11px]">
+              <span id="range-days-counter" class="font-semibold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">0 días</span>
+              <span class="text-slate-500 italic">«...del DD/MM/AAAA al DD/MM/AAAA...»</span>
+            </div>
+          </div>
+
+          <!-- UN SOLO DÍA -->
+          <div id="panel-single-date" class="hidden space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <div>
+              <label for="input-single-date" class="block text-xs font-semibold text-slate-700 mb-1">Día Solicitado</label>
+              <input type="date" id="input-single-date" oninput="updatePreview()" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <p class="text-[11px] text-slate-500">
+              Redacción: <span class="italic font-serif">«...en el mes de <b id="hint-month-single">noviembre</b> el <b id="hint-date-single">12/11/2026</b>...»</span>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- COLUMNA DERECHA: VISTA PREVIA IDÉNTICA A MICROSOFT WORD -->
+    <section id="preview-pane" class="flex-1 bg-slate-300/70 overflow-y-auto p-4 sm:p-8 lg:p-10 flex flex-col items-center justify-start min-h-full">
+      
+      <!-- Toolbar flotante de Zoom -->
+      <div class="no-print w-full max-w-[210mm] mb-3 flex items-center justify-between text-xs text-slate-600 px-1">
+        <span class="inline-flex items-center gap-1.5 font-semibold text-slate-800 bg-white/90 backdrop-blur px-2.5 py-1 rounded shadow-sm border border-slate-200">
+          <span class="w-2 h-2 rounded-full bg-blue-600"></span> Hoja A4 • Microsoft Word (Justificado)
+        </span>
+
+        <div class="flex items-center gap-1 bg-white/95 backdrop-blur border border-slate-200 rounded p-0.5 shadow-sm">
+          <button onclick="changeZoom(-0.05)" title="Reducir" class="w-6 h-6 flex items-center justify-center text-slate-700 hover:bg-slate-100 rounded font-bold text-sm">−</button>
+          <span id="zoom-indicator" class="px-1.5 text-[11px] font-semibold text-slate-700 min-w-[40px] text-center">100%</span>
+          <button onclick="changeZoom(0.05)" title="Aumentar" class="w-6 h-6 flex items-center justify-center text-slate-700 hover:bg-slate-100 rounded font-bold text-sm">+</button>
+          <button onclick="resetZoom()" title="100%" class="px-1.5 py-0.5 text-[10px] text-slate-500 hover:text-slate-800 rounded font-medium border-l border-slate-200">1:1</button>
+        </div>
+      </div>
+
+      <!-- HOJA EXACTA DE WORD (210mm x 297mm) -->
+      <div id="document-sheet" class="a4-sheet shadow-word-sheet rounded-none text-black flex flex-col justify-between font-doc-word px-[28mm] pt-[24mm] pb-[24mm] relative origin-top text-[11pt] leading-[1.25]">
+        
+        <!-- CONTENIDO SUPERIOR Y CUERPO -->
+        <div class="space-y-6">
+          
+          <!-- LEMA OFICIAL (CENTRADO) - SIEMPRE VISIBLE -->
+          <div id="doc-slogan-wrapper" class="text-center pb-1">
+            <p id="doc-slogan" class="text-[10pt] text-slate-800 tracking-normal">
+              «Año de la Esperanza y el Fortalecimiento de la Democracia»
+            </p>
+          </div>
+
+          <!-- LUGAR Y FECHA (DERECHA) -->
+          <div class="text-right pt-2">
+            <p id="doc-date-emission" class="text-[11pt] text-black">
+              Arequipa, 21 de octubre del 2026
+            </p>
+          </div>
+
+          <!-- DESTINATARIO (IZQUIERDA) -->
+          <div class="space-y-0.5 pt-3 leading-tight text-[11pt]">
+            <p id="doc-dest-name" class="font-bold text-black">Italo Carrera Yepez</p>
+            <p id="doc-dest-charge" class="text-black">Gerente del Área Administrativa</p>
+          </div>
+
+          <!-- ASUNTO (IZQUIERDA EN NEGRITA) -->
+          <div class="pt-3 pb-1">
+            <p class="text-[11pt] font-bold text-black">
+              ASUNTO: <span id="doc-subject">SOLICITUD DE VACACIONES</span>
+            </p>
+          </div>
+
+          <!-- PARTE DEL SOLICITANTE: A LA DERECHA SÍ O SÍ (SANGRADO AL 56%) -->
+          <div id="applicant-wrapper" class="flex justify-end pt-5">
+            <div id="applicant-box" class="w-[56%] text-justify text-[11pt] leading-[1.3]">
+              <p>
+                Yo, <strong id="doc-user-name" class="font-bold">GUEVARA VERA FIORELA ESTEFANIA</strong>, <span id="doc-gender-id">identificada</span> con DNI <strong id="doc-user-dni" class="font-bold">73809464</strong>, <span id="doc-gender-dom">domiciliada</span> en <span id="doc-user-address">Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa.</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- PÁRRAFO DE PETICIÓN (JUSTIFICADO POR PREDETERMINADO) -->
+          <div id="doc-body-container" class="pt-8 space-y-4 text-justify text-[11pt] leading-[1.35]">
+            <p id="doc-paragraph-request">
+              Solicito a cuenta de vacaciones en el mes de <span id="doc-month-phrase">junio</span> <span id="doc-dates-phrase">del 23/06/2026 al 30/06/2026</span>, espero mi solicitud no genere ningún inconveniente y sea aceptada por la empresa. Quedo a la espera de su respuesta.
+            </p>
+
+            <p id="doc-paragraph-salutation" class="pt-1 text-left">
+              Saludos Cordiales.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- BLOQUE DE FIRMA AL PIE (CENTRADO) -->
+        <div class="pt-24 pb-4 flex flex-col items-center justify-center text-center">
+          <div class="w-[68mm] flex flex-col items-center">
+            <p class="tracking-tighter select-none font-normal text-black">__________________________</p>
+            <p id="doc-sign-name" class="font-bold text-[11pt] uppercase tracking-wide text-black mt-1">
+              GUEVARA VERA FIORELA ESTEFANIA
+            </p>
+            <p id="doc-sign-dni" class="text-[11pt] text-black mt-0.5">
+              DNI: 73809464
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pie informativo en pantalla -->
+      <div class="no-print text-center text-xs text-slate-400 mt-6 pb-6">
+        Diseño Word 1:1 • Listo para imprimir directamente en A4
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- TOAST NOTIFICACIÓN -->
+  <div id="toast" class="no-print fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900 text-white px-4 py-2.5 rounded-lg shadow-xl flex items-center gap-2.5 text-xs">
+      <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+      </svg>
+      <span id="toast-message">Mensaje</span>
+    </div>
+  </div>
+
+  <script>
+    // Obtener la fecha de hoy en formato YYYY-MM-DD
+    function getTodayISODate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const state = {
+      mode: 'range', // 'range' o 'single'
+      gender: 'f',   // 'f' por defecto (femenino: identificada/domiciliada)
+      zoom: 1.0,
+      
+      slogan: '«Año de la Esperanza y el Fortalecimiento de la Democracia»',
+      city: 'Arequipa',
+      dateEmission: getTodayISODate(), // FECHA DE HOY POR DEFECTO
+      
+      destName: 'Italo Carrera Yepez',
+      destCharge: 'Gerente del Área Administrativa',
+      subject: 'SOLICITUD DE VACACIONES',
+      
+      userName: 'GUEVARA VERA FIORELA ESTEFANIA',
+      userDni: '73809464',
+      userAddress: 'Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa.',
+      
+      singleDate: '2026-11-12',
+      rangeStart: '2026-06-23',
+      rangeEnd: '2026-06-30'
+    };
+
+    const MONTH_NAMES = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Establecer valores iniciales
+      document.getElementById('input-date-emission').value = state.dateEmission;
+      document.getElementById('input-single-date').value = state.singleDate;
+      document.getElementById('input-range-start').value = state.rangeStart;
+      document.getElementById('input-range-end').value = state.rangeEnd;
+      
+      updateModeUI();
+      updateGenderUI();
+      updatePreview();
+    });
+
+    // Función para activar o desactivar edición de campos bloqueados
+    function toggleField(inputId, isEditable) {
+      const input = document.getElementById(inputId);
+      if (isEditable) {
+        input.removeAttribute('readonly');
+        input.classList.remove('input-locked');
+        input.classList.add('input-editable');
+        input.focus();
+      } else {
+        input.setAttribute('readonly', 'true');
+        input.classList.remove('input-editable');
+        input.classList.add('input-locked');
+      }
+    }
+
+    function parseDate(isoString) {
+      if (!isoString) return null;
+      const parts = isoString.split('-');
+      if (parts.length !== 3) return null;
+      return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    }
+
+    function formatDDMMYYYY(dateObj) {
+      if (!dateObj || isNaN(dateObj.getTime())) return 'DD/MM/AAAA';
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const year = dateObj.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+
+    function formatEmissionDateSpanish(dateObj, city) {
+      if (!dateObj || isNaN(dateObj.getTime())) {
+        return `${city || 'Ciudad'}, [Fecha]`;
+      }
+      const day = dateObj.getDate();
+      const month = MONTH_NAMES[dateObj.getMonth()];
+      const year = dateObj.getFullYear();
+      return `${city || 'Arequipa'}, ${day} de ${month} del ${year}`;
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      updateModeUI();
+      updatePreview();
+    }
+
+    function updateModeUI() {
+      const btnSingle = document.getElementById('btn-mode-single');
+      const btnRange = document.getElementById('btn-mode-range');
+      const panelSingle = document.getElementById('panel-single-date');
+      const panelRange = document.getElementById('panel-range-date');
+
+      if (state.mode === 'single') {
+        btnSingle.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition shadow-sm bg-white text-blue-700 border border-slate-200/80';
+        btnRange.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold transition text-slate-600';
+        panelSingle.classList.remove('hidden');
+        panelRange.classList.add('hidden');
+      } else {
+        btnRange.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition shadow-sm bg-white text-blue-700 border border-slate-200/80';
+        btnSingle.className = 'flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold transition text-slate-600';
+        panelRange.classList.remove('hidden');
+        panelSingle.classList.add('hidden');
+      }
+    }
+
+    // Género: Femenino por defecto
+    function setGender(gender) {
+      state.gender = gender;
+      updateGenderUI();
+      updatePreview();
+    }
+
+    function updateGenderUI() {
+      const btnF = document.getElementById('gender-f');
+      const btnM = document.getElementById('gender-m');
+      if (state.gender === 'f') {
+        btnF.className = 'px-2.5 py-1 rounded font-semibold text-blue-700 bg-blue-100 border border-blue-200 transition';
+        btnM.className = 'px-2.5 py-1 rounded font-semibold text-slate-600 bg-slate-100 border border-slate-200 transition';
+      } else {
+        btnM.className = 'px-2.5 py-1 rounded font-semibold text-blue-700 bg-blue-100 border border-blue-200 transition';
+        btnF.className = 'px-2.5 py-1 rounded font-semibold text-slate-600 bg-slate-100 border border-slate-200 transition';
+      }
+    }
+
+    function calculateRangeDays() {
+      const startVal = document.getElementById('input-range-start').value;
+      const endVal = document.getElementById('input-range-end').value;
+      const counter = document.getElementById('range-days-counter');
+
+      if (!startVal || !endVal) {
+        counter.textContent = 'Seleccione fechas';
+        return;
+      }
+
+      const d1 = parseDate(startVal);
+      const d2 = parseDate(endVal);
+
+      if (d1 && d2) {
+        const diffTime = d2.getTime() - d1.getTime();
+        const diffDays = Math.round(diffTime / (1000 * 3600 * 24)) + 1;
+        if (diffDays > 0) {
+          counter.textContent = `${diffDays} día${diffDays > 1 ? 's' : ''}`;
+        } else {
+          counter.textContent = 'Fecha fin inválida';
+        }
+      }
+    }
+
+    function updatePreview() {
+      // 1. Lema Oficial (SIEMPRE VISIBLE)
+      const sloganText = document.getElementById('input-slogan').value.trim();
+      document.getElementById('doc-slogan').textContent = sloganText || '«Año de la Esperanza y el Fortalecimiento de la Democracia»';
+
+      // 2. Ciudad y Fecha de Emisión
+      const city = document.getElementById('input-city').value.trim() || 'Arequipa';
+      const dateEmissionVal = document.getElementById('input-date-emission').value;
+      document.getElementById('doc-date-emission').textContent = formatEmissionDateSpanish(parseDate(dateEmissionVal), city);
+
+      // 3. Destinatario y Asunto
+      document.getElementById('doc-dest-name').textContent = document.getElementById('input-dest-name').value.trim() || 'Italo Carrera Yepez';
+      document.getElementById('doc-dest-charge').textContent = document.getElementById('input-dest-charge').value.trim() || 'Gerente del Área Administrativa';
+      document.getElementById('doc-subject').textContent = document.getElementById('input-subject').value.trim() || 'SOLICITUD DE VACACIONES';
+
+      // 4. Datos del Solicitante
+      const userName = document.getElementById('input-user-name').value.trim() || 'GUEVARA VERA FIORELA ESTEFANIA';
+      const userDni = document.getElementById('input-user-dni').value.trim() || '73809464';
+      const userAddress = document.getElementById('input-user-address').value.trim() || 'Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa.';
+
+      document.getElementById('doc-user-name').textContent = userName;
+      document.getElementById('doc-user-dni').textContent = userDni;
+      document.getElementById('doc-user-address').textContent = userAddress;
+
+      // Concordancia de género (Femenino por defecto)
+      document.getElementById('doc-gender-id').textContent = state.gender === 'f' ? 'identificada' : 'identificado';
+      document.getElementById('doc-gender-dom').textContent = state.gender === 'f' ? 'domiciliada' : 'domiciliado';
+
+      // 5. Redacción dinámica de fechas
+      const docMonth = document.getElementById('doc-month-phrase');
+      const docDates = document.getElementById('doc-dates-phrase');
+
+      if (state.mode === 'single') {
+        const singleVal = document.getElementById('input-single-date').value;
+        const sDate = parseDate(singleVal);
+        if (sDate) {
+          const mName = MONTH_NAMES[sDate.getMonth()];
+          const fDate = formatDDMMYYYY(sDate);
+          docMonth.textContent = mName;
+          docDates.textContent = `el ${fDate}`;
+          document.getElementById('hint-month-single').textContent = mName;
+          document.getElementById('hint-date-single').textContent = fDate;
+        } else {
+          docMonth.textContent = '[mes]';
+          docDates.textContent = 'el [DD/MM/AAAA]';
+        }
+      } else {
+        calculateRangeDays();
+        const startVal = document.getElementById('input-range-start').value;
+        const endVal = document.getElementById('input-range-end').value;
+        const startDate = parseDate(startVal);
+        const endDate = parseDate(endVal);
+
+        if (startDate && endDate) {
+          const startMonthName = MONTH_NAMES[startDate.getMonth()];
+          const endMonthName = MONTH_NAMES[endDate.getMonth()];
+          const startFormatted = formatDDMMYYYY(startDate);
+          const endFormatted = formatDDMMYYYY(endDate);
+
+          if (startDate.getMonth() === endDate.getMonth()) {
+            docMonth.textContent = startMonthName;
+          } else {
+            docMonth.textContent = `${startMonthName} y ${endMonthName}`;
+          }
+          docDates.textContent = `del ${startFormatted} al ${endFormatted}`;
+        } else {
+          docMonth.textContent = '[mes]';
+          docDates.textContent = 'del [DD/MM/AAAA] al [DD/MM/AAAA]';
+        }
+      }
+
+      // 6. Firma
+      document.getElementById('doc-sign-name').textContent = userName;
+      document.getElementById('doc-sign-dni').textContent = `DNI: ${userDni}`;
+    }
+
+    // Cargar Ejemplos
+    function loadExample(type) {
+      if (type === 'roger') {
+        setMode('single');
+        setGender('m');
+
+        document.getElementById('input-user-name').value = 'SANALEA CALCINA ROGER JAIR';
+        document.getElementById('input-user-dni').value = '72040673';
+        document.getElementById('input-user-address').value = 'Pasaje Miguel Grau 205 Leones del Misti.';
+        document.getElementById('input-single-date').value = '2026-11-12';
+
+        showToast('Cargado: Roger Jair (1 solo día)');
+      } else {
+        setMode('range');
+        setGender('f'); // Femenino por defecto
+
+        document.getElementById('input-user-name').value = 'GUEVARA VERA FIORELA ESTEFANIA';
+        document.getElementById('input-user-dni').value = '73809464';
+        document.getElementById('input-user-address').value = 'Urb. El Solar de Challapampa Mz. B Lte. 11, Arequipa.';
+        document.getElementById('input-range-start').value = '2026-06-23';
+        document.getElementById('input-range-end').value = '2026-06-30';
+
+        showToast('Cargado: Fiorela (Rango de fechas)');
+      }
+
+      updatePreview();
+    }
+
+    // Zoom
+    function changeZoom(delta) {
+      state.zoom = Math.min(Math.max(0.65, state.zoom + delta), 1.35);
+      applyZoom();
+    }
+
+    function resetZoom() {
+      state.zoom = 1.0;
+      applyZoom();
+    }
+
+    function applyZoom() {
+      document.getElementById('document-sheet').style.transform = `scale(${state.zoom})`;
+      document.getElementById('zoom-indicator').textContent = `${Math.round(state.zoom * 100)}%`;
+    }
+
+    // Copiar
+    function copyToClipboard() {
+      const city = document.getElementById('input-city').value.trim() || 'Arequipa';
+      const dateVal = document.getElementById('input-date-emission').value;
+      const dateStr = formatEmissionDateSpanish(parseDate(dateVal), city);
+      const destName = document.getElementById('input-dest-name').value.trim();
+      const destCharge = document.getElementById('input-dest-charge').value.trim();
+      const subject = document.getElementById('input-subject').value.trim();
+      const userName = document.getElementById('input-user-name').value.trim();
+      const userDni = document.getElementById('input-user-dni').value.trim();
+      const userAddress = document.getElementById('input-user-address').value.trim();
+      const genderId = state.gender === 'f' ? 'identificada' : 'identificado';
+      const genderDom = state.gender === 'f' ? 'domiciliada' : 'domiciliado';
+
+      let requestParagraph = '';
+      if (state.mode === 'single') {
+        const sDate = parseDate(document.getElementById('input-single-date').value);
+        const mName = sDate ? MONTH_NAMES[sDate.getMonth()] : '[mes]';
+        const fDate = formatDDMMYYYY(sDate);
+        requestParagraph = `Solicito a cuenta de vacaciones en el mes de ${mName} el ${fDate}, espero mi solicitud no genere ningún inconveniente y sea aceptada por la empresa. Quedo a la espera de su respuesta.`;
+      } else {
+        const startDate = parseDate(document.getElementById('input-range-start').value);
+        const endDate = parseDate(document.getElementById('input-range-end').value);
+        const mName = startDate ? MONTH_NAMES[startDate.getMonth()] : '[mes]';
+        requestParagraph = `Solicito a cuenta de vacaciones en el mes de ${mName} del ${formatDDMMYYYY(startDate)} al ${formatDDMMYYYY(endDate)}, espero mi solicitud no genere ningún inconveniente y sea aceptada por la empresa. Quedo a la espera de su respuesta.`;
+      }
+
+      const fullText = `${dateStr}\n\n${destName}\n${destCharge}\n\nASUNTO: ${subject}\n\nYo, ${userName}, ${genderId} con DNI ${userDni}, ${genderDom} en ${userAddress}\n\n${requestParagraph}\n\nSaludos Cordiales.\n\n__________________________\n${userName}\nDNI: ${userDni}`;
+
+      navigator.clipboard.writeText(fullText).then(() => {
+        showToast('Texto copiado al portapapeles');
+      });
+    }
+
+    // Imprimir
+    function printDocument() {
+      const prevZoom = state.zoom;
+      resetZoom();
+      window.print();
+      state.zoom = prevZoom;
+      applyZoom();
+    }
+
+    // Pestañas móvil
+    function switchMobileTab(tab) {
+      const formPanel = document.getElementById('form-panel');
+      const previewPane = document.getElementById('preview-pane');
+      const tabForm = document.getElementById('tab-btn-form');
+      const tabPreview = document.getElementById('tab-btn-preview');
+
+      if (tab === 'form') {
+        formPanel.classList.remove('hidden');
+        previewPane.classList.add('hidden');
+        tabForm.className = 'flex-1 py-1.5 text-xs font-semibold rounded-md bg-blue-50 text-blue-700 border border-blue-200';
+        tabPreview.className = 'flex-1 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:bg-slate-100';
+      } else {
+        formPanel.classList.add('hidden');
+        previewPane.classList.remove('hidden');
+        tabPreview.className = 'flex-1 py-1.5 text-xs font-semibold rounded-md bg-blue-50 text-blue-700 border border-blue-200';
+        tabForm.className = 'flex-1 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:bg-slate-100';
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
